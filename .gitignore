@@ -1,0 +1,7 @@
+config.py
+*.json
+*.txt
+*.code-workspace
+__pycache__
+/ld2l-data/
+*.csv
