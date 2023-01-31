@@ -5,3 +5,5 @@ config.py
 __pycache__
 /ld2l-data/
 *.csv
+*.pbix
+/match_data_[0-9]*/
