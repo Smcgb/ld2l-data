@@ -7,3 +7,4 @@ __pycache__
 *.csv
 *.pbix
 /match_data_[0-9]*/
+*.png
