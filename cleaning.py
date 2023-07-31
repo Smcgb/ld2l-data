@@ -29,6 +29,8 @@ medals = {
     61: 'N1',62: 'N2',63: 'N3',64: 'N4'
 }
 
+#this dict needs to be manually updated between seasons
+#TODO Automate dict creation
 teamID_dict = {
     8975614: 'Los Muertas',
     8975076: 'Sand Gangers',
