@@ -1,0 +1,11 @@
+*.json
+*.pbix
+*.idea
+__pycache__
+*.ipynb_checkpoints
+config.py
+*.png
+*.pdf
+match_data_37
+match_data_40
+
