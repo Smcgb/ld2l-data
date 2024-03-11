@@ -53,7 +53,21 @@ teamID_dict = {
     7099256: "TCLHCB S16",
     9104074: "Themeless Void",
     9109191: "fock carmers",
-    9105513: "Thanks, LINE"
+    9105513: "Thanks, LINE",
+    #season 17
+    9303244:"Stellar Caribou",
+    9302527:"split-push-sprouts",
+    9292110:"block-of-cheddar",
+    9308707:"waygu-beefs",
+    9308703:"e-coli-",
+    9304134:"black-king-barbecue",
+    9298317:"mac-and-cheese",
+    9308648:"bfb",
+    9298809:"rylai",
+    9308158:"loc",
+    9298829:"sss",
+    3211031:"team-tiger"    
+
 }
 
 def clean_date(df):
@@ -181,6 +195,7 @@ def die_pingers(df):
 
     plt.figure(figsize=(20,10))
     sns.barplot(x='personaname', y='pings_per_minute', data=df_pings.sort_values('pings_per_minute', ascending=False).head(10))
+    plt.title('Top 10 Most Toxic Players')
     plt.show()
 
     df_pings = df.groupby('personaname')[['pings']].sum().reset_index()
@@ -227,7 +242,10 @@ def time_series_plotting(df):
 
     colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',
               '#9467bd', '#8c564b', '#e377c2', '#7f7f7f',
-              '#bcbd22', '#17becf', '#aec7e8', '#ffbb78']
+              '#bcbd22', '#17becf', '#aec7e8', '#ffbb78',
+              '#98df8a', '#ff9896', '#9467bd', '#c5b0d5',
+              '#8c564b', '#c49c94', '#e377c2', '#f7b6d2',
+              '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d']
 
     for team in teams:
         df_team = df[df['teamID'] == team]
@@ -238,7 +256,7 @@ def time_series_plotting(df):
         colors.pop(0)
 
     # plot teams cumulative average kda over time
-    plt.legend()
+    plt.legend(loc='lower right', fontsize='small')
     plt.show()
 
     # do the same for gpm
@@ -258,7 +276,10 @@ def time_series_plotting(df):
 
     colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',
               '#9467bd', '#8c564b', '#e377c2', '#7f7f7f',
-              '#bcbd22', '#17becf', '#aec7e8', '#ffbb78']
+              '#bcbd22', '#17becf', '#aec7e8', '#ffbb78',
+              '#98df8a', '#ff9896', '#9467bd', '#c5b0d5',
+              '#8c564b', '#c49c94', '#e377c2', '#f7b6d2',
+              '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d']
 
     for team in teams:
         df_team = df[df['teamID'] == team]
@@ -288,7 +309,10 @@ def time_series_plotting(df):
 
     colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',
               '#9467bd', '#8c564b', '#e377c2', '#7f7f7f',
-              '#bcbd22', '#17becf', '#aec7e8', '#ffbb78']
+              '#bcbd22', '#17becf', '#aec7e8', '#ffbb78',
+              '#98df8a', '#ff9896', '#9467bd', '#c5b0d5',
+              '#8c564b', '#c49c94', '#e377c2', '#f7b6d2',
+              '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d']
 
     for team in teams:
         df_team = df[df['teamID'] == team]
@@ -323,11 +347,32 @@ def most_common_heroes(df):
 
     sns.set_style('whitegrid')
     plt.figure(figsize=(20,10))
-    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf', '#aec7e8', '#ffbb78']
     # plot the tree map with counts and hero ids
     labels = []
     for hero in df_heroes['hero_id']:
         labels.append(f"{hero} {df_heroes[df_heroes['hero_id'] == hero]['count'].values[0]}")
+    squarify.plot(sizes=df_heroes['count'], label=labels, alpha=.8, color=colors)
+    plt.axis('off')
+    plt.show()
+
+def most_common_winrate(df):
+    """Plots the most common heroes played as a tree map and their win rate"""
+
+    df_heroes = df.groupby('hero_id').agg({'hero_id': 'count', 'win': 'mean'}).rename(columns={'hero_id': 'count', 'win': 'win_rate'}).reset_index().sort_values('count', ascending=False)
+
+    #filter to top 10 heroes
+    df_heroes = df_heroes.head(10)
+
+    sns.set_style('whitegrid')
+    plt.figure(figsize=(20,10))
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf', '#aec7e8', '#ffbb78']
+    # plot the tree map with counts, hero ids, and win rates
+    labels = []
+    for hero in df_heroes['hero_id']:
+        count = df_heroes[df_heroes['hero_id'] == hero]['count'].values[0]
+        win_rate = df_heroes[df_heroes['hero_id'] == hero]['win_rate'].values[0]
+        labels.append(f"{hero} ({count}, {win_rate:.2f})")
     squarify.plot(sizes=df_heroes['count'], label=labels, alpha=.8, color=colors)
     plt.axis('off')
     plt.show()
@@ -378,22 +423,3 @@ def numbah_one_stunna(df):
 
     highest_stun_game = df[df['stuns'] == df['stuns'].max()]
     print(highest_stun_game[['personaname', 'hero_id', 'stuns', 'match_id']])
-
-def decision_tree_ranks(df):
-
-    """Creates a decision tree to rank teams based on their performance"""
-
-    # create a dataframe with only the columns we want to use
-
-    df_ranks = df[['teamID', 'kda', 'gold_per_min', 'xp_per_min',
-                   'last_hits', 'denies', 'roshans_killed', 'tower_damage',
-                   'hero_damage', 'hero_healing', 'kda', 'win']]
-
-    # win is the target variable
-
-    X = df_ranks.drop('win', axis=1)
-
-    y = df_ranks['win']
-
-    # split the data into training and testing data
-

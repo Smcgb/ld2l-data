@@ -6,6 +6,9 @@ __pycache__
 config.py
 *.png
 *.pdf
-match_data_37
-match_data_40
-
+match_data_*
+*.html
+*.md
+*.conda
+/images
+*.ipynb
